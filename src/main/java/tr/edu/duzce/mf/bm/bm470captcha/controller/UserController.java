@@ -1,5 +1,7 @@
 package tr.edu.duzce.mf.bm.bm470captcha.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
 
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserVerificationService userVerificationService;
 
     @Autowired
@@ -57,6 +60,10 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
 
         try {
+            logger.info("request path: /api/user/register");
+            logger.info("Kullanıcı adı: " + username);
+            logger.info("Şifre: " + password);
+            logger.info("kayit isteği yapıldı.");
             userVerificationService.registerUser(username, password);
             response.put("success", true);
             response.put("message", "Kayit basarili!");
