@@ -10,21 +10,14 @@ import lombok.*;
 @Table(name = "captcha")
 public class Captcha {
 
-    @Getter
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
     @Lob
     @Column(name = "image", nullable = false)
-    private byte[] image;
+    private byte[] image;  // BLOB olarak saklanacak resim
 
-    @Getter
-    @Setter
     @Column(name = "text_value", nullable = false, length = 100)
     private String textValue;
-
 }
