@@ -21,7 +21,7 @@ public class CaptchaController {
     /**
      * Rastgele bir captcha getirir.
      */
-    @GetMapping(produces = "application/json")
+    @GetMapping(value = "/getcaptcha",produces = "application/json")
     public ResponseEntity<Map<String, Object>> getCaptcha() {
         Captcha captcha = captchaService.getRandomCaptcha();
 
