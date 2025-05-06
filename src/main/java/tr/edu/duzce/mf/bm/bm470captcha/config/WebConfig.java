@@ -22,11 +22,10 @@ import java.util.Locale;
 @ComponentScan(basePackages = {"tr.edu.duzce.mf.bm.bm470captcha"})
 public class WebConfig implements WebMvcConfigurer {
 
-
+    // JSP view resolver
     @Bean
     public InternalResourceViewResolver jspViewResolver() {
-        InternalResourceViewResolver viewResolver = new
-                InternalResourceViewResolver();
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
         viewResolver.setPrefix("/WEB-INF/view/");
         viewResolver.setSuffix(".jsp");
@@ -34,35 +33,38 @@ public class WebConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
+    // Locale resolver (çerez temelli)
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver clr = new CookieLocaleResolver();
-        clr.setDefaultLocale(Locale.forLanguageTag("tr-TR"));   // varsayılan
-        clr.setCookieName("bm470-captcha");               // çerez adı
-        clr.setCookieMaxAge(3600);                              // saniye
+        clr.setDefaultLocale(Locale.forLanguageTag("tr-TR"));
+        clr.setCookieName("bm470-captcha");
+        clr.setCookieMaxAge(3600); // saniye
         return clr;
     }
 
+    // Lang parametresi ile dil değiştirme desteği
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang");
+        lci.setParamName("lang"); // ?lang=en gibi kullanım
         return lci;
     }
 
+    // Interceptor kayıtları
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor()).addPathPatterns("/*");
         registry.addInterceptor(new RequestInterceptor()).addPathPatterns("/*");
     }
 
+    // Mesaj kaynakları
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setBasename("classpath:messages");   // messages.properties kökü
+        ms.setBasename("classpath:messages");
         ms.setDefaultEncoding("UTF-8");
-        ms.setFallbackToSystemLocale(false);    // sistem diline düşmesin
+        ms.setFallbackToSystemLocale(false);
         return ms;
     }
-
 }
-

@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<Map<String, Object>> loginUser(@RequestParam("username") String username,
                                                          @RequestParam("password") String password,
-                                                         Locale locale) {
+                                                         @RequestHeader(value = "Accept-Language", defaultValue = "tr") Locale locale) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -55,7 +55,7 @@ public class UserController {
     @PostMapping(value = "/register", produces = "application/json")
     public ResponseEntity<Map<String, Object>> registerUser(@RequestParam("username") String username,
                                                             @RequestParam("password") String password,
-                                                            Locale locale) {
+                                                            @RequestHeader(value = "Accept-Language", defaultValue = "tr") Locale locale) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -72,4 +72,3 @@ public class UserController {
         }
     }
 }
-
