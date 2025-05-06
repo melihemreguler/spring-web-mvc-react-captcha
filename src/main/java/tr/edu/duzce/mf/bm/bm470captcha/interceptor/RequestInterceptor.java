@@ -27,8 +27,8 @@ public class RequestInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         Parameter[] parameters = method.getParameters();
-
         // Parametre bilgilerini veri tipi ve değeri ile al
+
         Map<String, Object> paramMap = new HashMap<>();
         for (Parameter param : parameters) {
             String name = param.getName(); // Parametre ismi
@@ -44,6 +44,7 @@ public class RequestInterceptor implements HandlerInterceptor {
         logMap.put("parameters", paramMap);
 
         logger.info("API Request -> {}", logMap);
+        System.out.println(">>> Interceptor çalıştı: " + logMap);
 
         return true;
     }
@@ -53,5 +54,7 @@ public class RequestInterceptor implements HandlerInterceptor {
                            Object handler, org.springframework.web.servlet.ModelAndView modelAndView) {
         // İsteğin sonrasında yapılacak ek loglama burada olabilir (örneğin statusCode)
         logger.debug("Completed processing of URI: {}", request.getRequestURI());
+        System.out.println(">>> Interceptor çalıştı: ");
+
     }
 }

@@ -1,5 +1,6 @@
 package tr.edu.duzce.mf.bm.bm470captcha.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -50,13 +51,13 @@ public class WebConfig implements WebMvcConfigurer {
         lci.setParamName("lang"); // ?lang=en gibi kullanım
         return lci;
     }
-
+    @Autowired
+    private RequestInterceptor requestInterceptor;
     // Interceptor kayıtları
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor()).addPathPatterns("/*");
-        registry.addInterceptor(new RequestInterceptor()).addPathPatterns("/*");
-    }
+        registry.addInterceptor(requestInterceptor).addPathPatterns("/**");    }
 
     // Mesaj kaynakları
     @Bean
