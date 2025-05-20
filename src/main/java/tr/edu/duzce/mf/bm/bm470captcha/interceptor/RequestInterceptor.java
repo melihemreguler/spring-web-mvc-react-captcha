@@ -9,7 +9,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +26,13 @@ public class RequestInterceptor implements HandlerInterceptor {
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-        Parameter[] parameters = method.getParameters();
-        // Parametre bilgilerini veri tipi ve değeri ile al
 
-        Map<String, Object> paramMap = new HashMap<>();
-        for (Parameter param : parameters) {
-            String name = param.getName(); // Parametre ismi
-            String value = request.getParameter(name); // Değer (request parametrelerinden)
-            paramMap.put(name + ":" + param.getType().getSimpleName(), value);
+        // Parametreleri doğrudan HttpServletRequest içinden al (request.getParameterMap)
+        Map<String, String[]> requestParams = request.getParameterMap();
+        Map<String, Object> paramLog = new HashMap<>();
+
+        for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
+            paramLog.put(entry.getKey(), Arrays.toString(entry.getValue()));
         }
 
         Map<String, Object> logMap = new HashMap<>();
@@ -41,7 +40,13 @@ public class RequestInterceptor implements HandlerInterceptor {
         logMap.put("httpMethod", request.getMethod());
         logMap.put("controller", handlerMethod.getBeanType().getSimpleName());
         logMap.put("method", method.getName());
-        logMap.put("parameters", paramMap);
+        logMap.put("parameters", paramLog);
+
+        // Accept-Language gibi header bilgilerini de ekleyebilirsin:
+        String localeHeader = request.getHeader("Accept-Language");
+        if (localeHeader != null) {
+            logMap.put("Accept-Language", localeHeader);
+        }
 
         logger.info("API Request -> {}", logMap);
         System.out.println(">>> Interceptor çalıştı: " + logMap);
@@ -52,9 +57,6 @@ public class RequestInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, org.springframework.web.servlet.ModelAndView modelAndView) {
-        // İsteğin sonrasında yapılacak ek loglama burada olabilir (örneğin statusCode)
         logger.debug("Completed processing of URI: {}", request.getRequestURI());
-        System.out.println(">>> Interceptor çalıştı: ");
-
     }
 }
