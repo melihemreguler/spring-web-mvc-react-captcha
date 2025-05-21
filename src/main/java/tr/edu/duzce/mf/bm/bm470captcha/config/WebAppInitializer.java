@@ -8,6 +8,7 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
+import tr.edu.duzce.mf.bm.bm470captcha.util.LoggingFilter;
 
 
 public class WebAppInitializer implements WebApplicationInitializer {
@@ -21,7 +22,9 @@ public class WebAppInitializer implements WebApplicationInitializer {
         dispatcherServlet.setLoadOnStartup(1);
         dispatcherServlet.addMapping("/");
         dispatcherServlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
-
+// Logging Filter
+        servletContext.addFilter("loggingFilter", new LoggingFilter())
+                .addMappingForUrlPatterns(null, false, "/*");
         // UTF-8 karakter kodlaması
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");

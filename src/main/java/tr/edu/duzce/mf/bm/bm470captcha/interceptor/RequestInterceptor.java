@@ -42,7 +42,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         logMap.put("method", method.getName());
         logMap.put("parameters", paramLog);
 
-        // Accept-Language gibi header bilgilerini de ekleyebilirsin:
         String localeHeader = request.getHeader("Accept-Language");
         if (localeHeader != null) {
             logMap.put("Accept-Language", localeHeader);
