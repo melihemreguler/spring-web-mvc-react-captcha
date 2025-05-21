@@ -18,9 +18,14 @@ public class CaptchaGeneratorController {
         this.captchaService = captchaService;
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/generate100")
     public ResponseEntity<String> generateCaptchas() {
         captchaService.generateAndSaveCaptchas(100);
         return ResponseEntity.ok("100 base64 CAPTCHA başarıyla üretildi ve kaydedildi.");
+    }
+    @PostMapping("/generate")
+    public ResponseEntity<String> generateCaptcha() {
+        captchaService.generateAndSaveCaptchas(1);
+        return ResponseEntity.ok("1 base64 CAPTCHA başarıyla üretildi ve kaydedildi.");
     }
 }
