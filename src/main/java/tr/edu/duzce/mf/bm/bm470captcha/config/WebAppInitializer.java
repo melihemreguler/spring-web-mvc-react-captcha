@@ -29,7 +29,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
         servletContext.addFilter("characterEncodingFilter", characterEncodingFilter)
                 .addMappingForUrlPatterns(null, false, "/*");
 
-        // ✅ CORS filtresini ekle
+        // CORS filtresi
         FilterRegistration.Dynamic corsFilter = servletContext.addFilter("corsFilter", new CorsFilter());
         corsFilter.addMappingForUrlPatterns(null, false, "/*"); // tüm endpoint’lere uygula
     }

@@ -51,9 +51,9 @@ public class TestCaptchaController {
         var captchaResponse = captchaController.getCaptcha(Locale.forLanguageTag("tr-TR"));
         Long captchaId = (Long) captchaResponse.getBody().get("captchaId");
 
-        String correctCaptchaInput = "QH7KQF"; // <- Bu test veritabanındaki gerçek değer olmalı!
+        String correctCaptchaInput = "IR0FIP"; // <- Bu test veritabanındaki gerçek değer olmalı!
 
-        var response = captchaController.validateCaptcha(captchaId, correctCaptchaInput, Locale.forLanguageTag("tr-TR"));
+        var response = captchaController.validateCaptcha(103L, correctCaptchaInput, Locale.forLanguageTag("tr-TR"));
 
         Assertions.assertEquals(200, response.getStatusCodeValue());
         Assertions.assertTrue((Boolean) response.getBody().get("success"));

@@ -52,7 +52,7 @@ public class CaptchaRepositoryImpl implements ICaptchaRepository {
             if (captchas.isEmpty()) {
                 throw new CaptchaException("Veritabanında kayıtlı Captcha bulunamadı.");
             }
-
+//1 TANE RASTGELE GETİR
             int randomIndex = random.nextInt(captchas.size());
             return captchas.get(randomIndex);
         } catch (Exception e) {
