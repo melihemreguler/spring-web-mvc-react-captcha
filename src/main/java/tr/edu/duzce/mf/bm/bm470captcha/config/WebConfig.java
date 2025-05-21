@@ -34,15 +34,8 @@ public class WebConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
-    // Locale resolver (çerez temelli)
-    @Bean
-    public LocaleResolver localeResolver() {
-        CookieLocaleResolver clr = new CookieLocaleResolver();
-        clr.setDefaultLocale(Locale.forLanguageTag("tr-TR"));
-        clr.setCookieName("bm470-captcha");
-        clr.setCookieMaxAge(3600); // saniye
-        return clr;
-    }
+
+
 
     // Lang parametresi ile dil değiştirme desteği
     @Bean

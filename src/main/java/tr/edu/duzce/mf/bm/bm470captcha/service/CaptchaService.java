@@ -6,6 +6,8 @@ import tr.edu.duzce.mf.bm.bm470captcha.entity.Captcha;
 import tr.edu.duzce.mf.bm.bm470captcha.exception.CaptchaException;
 import tr.edu.duzce.mf.bm.bm470captcha.repository.ICaptchaRepository;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CaptchaService {
@@ -40,5 +42,37 @@ public class CaptchaService {
         } catch (Exception e) {
             throw new CaptchaException("Captcha doğrulama sırasında bir hata oluştu.", e);
         }
+    }
+
+    /**
+     * Sayfalama ile Captcha listesini döner.
+     *
+     * @param page sayfa numarası (0 tabanlı)
+     * @param size sayfa boyutu
+     * @return captcha listesi
+     */
+    public List<Captcha> getAllCaptchas(int page, int size) {
+        return captchaRepository.findAll(page, size);
+    }
+    public long getTotalCount() {
+        return captchaRepository.count();
+    }
+
+    /**
+     * Yeni Captcha kaydeder.
+     *
+     * @param captcha kaydedilecek captcha nesnesi
+     */
+    public void addCaptcha(Captcha captcha) {
+        captchaRepository.save(captcha);
+    }
+
+    /**
+     * Belirtilen ID'ye sahip Captcha'yı siler.
+     *
+     * @param id silinecek captcha id
+     */
+    public void deleteCaptcha(Long id) {
+        captchaRepository.deleteById(id);
     }
 }
