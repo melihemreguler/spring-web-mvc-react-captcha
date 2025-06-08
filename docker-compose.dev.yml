@@ -27,7 +27,7 @@ services:
     container_name: captcha-frontend-dev
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "3000:80"
     networks:
       - internal
     depends_on:
