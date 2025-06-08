@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: captcha-backend
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=captcha.melihemre.dev
+      - VIRTUAL_PATH=/api
+      - LETSENCRYPT_HOST=captcha.melihemre.dev
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./backend/logs:/usr/local/tomcat/logs
+    networks:
+      - web
+      - internal
+    depends_on:
+      - frontend
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: captcha-frontend
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=captcha.melihemre.dev
+      - VIRTUAL_PATH=/
+      - LETSENCRYPT_HOST=captcha.melihemre.dev
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    networks:
+      - web
+      - internal
+
+networks:
+  web:
+    name: web
+    external: true
+  internal:
+    driver: bridge
