@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    image: melihemreguler/captcha-backend:latest
     container_name: captcha-backend
     restart: unless-stopped
     environment:
@@ -18,7 +16,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
     volumes:
-      - ./backend/logs:/usr/local/tomcat/logs
+      - ./logs:/usr/local/tomcat/logs
     networks:
       - web
       - internal
@@ -26,9 +24,7 @@ services:
       - frontend
 
   frontend:
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: melihemreguler/captcha-frontend:latest
     container_name: captcha-frontend
     restart: unless-stopped
     environment:
