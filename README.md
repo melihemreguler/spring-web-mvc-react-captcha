@@ -77,14 +77,23 @@ captcha-app/
    # Edit .env with your database credentials
    ```
 
-3. Start the application:
+3. Start the application for development:
    ```bash
-   docker compose up --build
+   docker compose -f docker-compose.dev.yml up --build
    ```
 
 4. Access the application:
    - Frontend: http://localhost (port 80)
-   - Backend API: http://localhost/api
+   - Backend API: http://localhost:8080
+
+## Production Deployment
+
+The application uses a CI/CD pipeline that builds Docker images and pushes them to Docker Hub, then deploys to EC2.
+
+### Docker Hub Images
+
+- Backend: `melihemreguler/captcha-backend:latest`
+- Frontend: `melihemreguler/captcha-frontend:latest`
 
 ## Production Deployment
 
@@ -93,6 +102,8 @@ captcha-app/
 1. Install Docker and Docker Compose on EC2
 2. Clone the repository to `/home/ec2-user/captcha-app`
 3. Set up GitHub Secrets for CI/CD:
+   - `DOCKER_HUB_USERNAME`: Your Docker Hub username
+   - `DOCKER_HUB_ACCESS_TOKEN`: Your Docker Hub access token
    - `EC2_SSH_KEY`: Your EC2 private key
    - `EC2_HOST`: Your EC2 public IP
    - `EC2_USER`: ec2-user
