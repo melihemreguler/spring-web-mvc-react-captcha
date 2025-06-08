@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="bm-470">
-    <output-path>$PROJECT_DIR$/out/artifacts/bm_470</output-path>
-    <root id="archive" name="bm-470.war" />
-  </artifact>
-</component>
