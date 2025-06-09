@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: captcha-db-dev
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME:-postgres}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
   backend:
     build: 
       context: ./backend
@@ -8,7 +23,7 @@ services:
     container_name: captcha-backend-dev
     restart: unless-stopped
     environment:
-      - DB_HOST=${DB_HOST:-localhost}
+      - DB_HOST=${DB_HOST:-db}
       - DB_PORT=${DB_PORT:-5432}
       - DB_NAME=${DB_NAME:-postgres}
       - DB_USER=${DB_USER:-postgres}
@@ -19,6 +34,8 @@ services:
       - ./logs:/usr/local/tomcat/logs
     networks:
       - internal
+    depends_on:
+      - db
 
   frontend:
     build: 
@@ -36,3 +53,6 @@ services:
 networks:
   internal:
     driver: bridge
+
+volumes:
+  postgres_data:

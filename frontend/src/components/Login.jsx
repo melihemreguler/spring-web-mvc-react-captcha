@@ -118,6 +118,7 @@ export default function Login() {
   };
 
   return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">{t.title}</h1>
@@ -213,5 +214,6 @@ export default function Login() {
             </p>
         )}
       </div>
+    </div>
   );
 }
