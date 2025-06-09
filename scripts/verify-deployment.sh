@@ -52,9 +52,9 @@ echo "--- Port 8080 ---"
 sudo ss -tlnp | grep :8080 || echo "Port 8080 not listening"
 
 echo -e "\n=== Project Directory ==="
-if [ -d ~/captcha-app ]; then
-    echo "Project directory exists: ~/captcha-app"
-    cd ~/captcha-app
+if [ -d ~/spring-web-mvc-react-captcha ]; then
+    echo "Project directory exists: ~/spring-web-mvc-react-captcha"
+    cd ~/spring-web-mvc-react-captcha
     echo "Git status:"
     git status --porcelain 2>/dev/null || echo "Not a git repository"
     echo "Git branch:"
@@ -76,7 +76,7 @@ if [ -d ~/captcha-app ]; then
         echo ".env file not found"
     fi
 else
-    echo "Project directory does not exist: ~/captcha-app"
+    echo "Project directory does not exist: ~/spring-web-mvc-react-captcha"
 fi
 
 echo -e "\n=== SSL Certificate Status ==="

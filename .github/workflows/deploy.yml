@@ -52,6 +52,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
     - name: Setup SSH Key
       run: |
         mkdir -p ~/.ssh
@@ -59,42 +62,24 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
+    - name: Copy Scripts to EC2
+      run: |
+        scp -r scripts/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/
+
     - name: Deploy to EC2
       run: |
         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          # Clean up disk space first
-          echo "Cleaning up disk space..."
-          
-          # Remove Docker build cache and unused containers/networks/volumes
-          docker system prune -af --volumes
-          
-          # Remove ALL unused Docker images (more aggressive)
-          docker image prune -af
-          docker rmi $(docker images -f "dangling=true" -q) 2>/dev/null || true
-          
-          # Clean apt cache and system files
-          sudo apt-get autoremove -y
-          sudo apt-get autoclean
-          sudo apt-get clean
-          
-          # Remove old log files (more aggressive)
-          sudo journalctl --vacuum-time=1d
-          sudo find /var/log -type f -name "*.log" -exec truncate -s 0 {} \; 2>/dev/null || true
-          
-          # Clean temporary files
-          sudo rm -rf /tmp/* 2>/dev/null || true
-          sudo rm -rf /var/tmp/* 2>/dev/null || true
-          
-          # Check disk space after cleanup
-          echo "Disk usage after cleanup:"
-          df -h /
-          
-          # Navigate to existing project directory
+          # Navigate to project directory
           cd /home/ubuntu/spring-web-mvc-react-captcha
 
           # Update repository
           git fetch origin
           git reset --hard origin/master
+          
+          # Run cleanup script
+          echo "Running cleanup script..."
+          chmod +x ~/scripts/cleanup-ec2.sh
+          ~/scripts/cleanup-ec2.sh
           
           # Check if we have enough disk space (need at least 2GB free)
           AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
@@ -118,14 +103,6 @@ jobs:
           LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
         EOL
 
-          # Stop existing containers to free up more space
-          echo "Stopping existing containers..."
-          docker compose down --remove-orphans
-          
-          # Remove old images of our application to free space
-          docker rmi melihemreguler/captcha-backend:latest 2>/dev/null || true
-          docker rmi melihemreguler/captcha-frontend:latest 2>/dev/null || true
-
           # Pull latest images (one at a time to manage disk space)
           echo "Pulling backend image..."
           docker pull melihemreguler/captcha-backend:latest
@@ -137,11 +114,16 @@ jobs:
           echo "Starting new containers..."
           docker compose up -d
 
-          # Clean up again after successful deployment
+          # Wait for containers to be ready
+          sleep 30
+
+          # Run verification script
+          echo "Running deployment verification..."
+          chmod +x ~/scripts/verify-deployment.sh
+          ~/scripts/verify-deployment.sh
+
+          # Final cleanup
           docker image prune -af
 
-          # Show final status
           echo "Deployment complete!"
-          docker compose ps
-          df -h /
         EOF
