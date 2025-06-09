@@ -103,6 +103,14 @@ jobs:
           LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
         EOL
 
+          # Stop only captcha app containers (preserve nginx-proxy and others)
+          echo "Stopping captcha app containers..."
+          docker compose down --remove-orphans || true
+          
+          # Remove old captcha app images to free space
+          docker rmi melihemreguler/captcha-backend:latest 2>/dev/null || true
+          docker rmi melihemreguler/captcha-frontend:latest 2>/dev/null || true
+
           # Pull latest images (one at a time to manage disk space)
           echo "Pulling backend image..."
           docker pull melihemreguler/captcha-backend:latest
@@ -122,8 +130,8 @@ jobs:
           chmod +x ~/scripts/verify-deployment.sh
           ~/scripts/verify-deployment.sh
 
-          # Final cleanup
-          docker image prune -af
+          # Final cleanup of unused images only
+          docker image prune -f
 
           echo "Deployment complete!"
         EOF
