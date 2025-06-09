@@ -62,7 +62,51 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd ~/captcha-app
+          # Clean up disk space first
+          echo "Cleaning up disk space..."
+          
+          # Remove Docker build cache and unused containers/networks/volumes
+          docker system prune -af --volumes
+          
+          # Remove ALL unused Docker images (more aggressive)
+          docker image prune -af
+          docker rmi $(docker images -f "dangling=true" -q) 2>/dev/null || true
+          
+          # Clean apt cache and system files
+          sudo apt-get autoremove -y
+          sudo apt-get autoclean
+          sudo apt-get clean
+          
+          # Remove old log files (more aggressive)
+          sudo journalctl --vacuum-time=1d
+          sudo find /var/log -type f -name "*.log" -exec truncate -s 0 {} \; 2>/dev/null || true
+          
+          # Clean temporary files
+          sudo rm -rf /tmp/* 2>/dev/null || true
+          sudo rm -rf /var/tmp/* 2>/dev/null || true
+          
+          # Check disk space after cleanup
+          echo "Disk usage after cleanup:"
+          df -h /
+          
+          # Navigate to existing project directory
+          cd /home/ubuntu/spring-web-mvc-react-captcha
+
+          # Update repository
+          git fetch origin
+          git reset --hard origin/master
+          
+          # Check if we have enough disk space (need at least 2GB free)
+          AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
+          echo "Available disk space: ${AVAILABLE_GB}GB"
+          
+          if [ $AVAILABLE_GB -lt 2 ]; then
+            echo "ERROR: Not enough disk space for deployment. Need at least 2GB free."
+            echo "Current usage:"
+            df -h /
+            exit 1
+          fi
 
           # Create .env file with secrets
           cat > .env << EOL
@@ -74,22 +118,30 @@ jobs:
           LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
         EOL
 
-          # Pull latest changes
-          git pull origin master
+          # Stop existing containers to free up more space
+          echo "Stopping existing containers..."
+          docker compose down --remove-orphans
+          
+          # Remove old images of our application to free space
+          docker rmi melihemreguler/captcha-backend:latest 2>/dev/null || true
+          docker rmi melihemreguler/captcha-frontend:latest 2>/dev/null || true
 
-          # Pull latest images
+          # Pull latest images (one at a time to manage disk space)
+          echo "Pulling backend image..."
           docker pull melihemreguler/captcha-backend:latest
+          
+          echo "Pulling frontend image..."
           docker pull melihemreguler/captcha-frontend:latest
 
-          # Stop and remove existing containers
-          docker compose down
-
-          # Start new containers with pulled images
+          # Start new containers
+          echo "Starting new containers..."
           docker compose up -d
 
-          # Clean up unused images to save space
+          # Clean up again after successful deployment
           docker image prune -af
 
-          # Show container status
+          # Show final status
+          echo "Deployment complete!"
           docker compose ps
+          df -h /
         EOF
