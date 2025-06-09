@@ -129,6 +129,15 @@ Configure Cloudflare DNS:
 - IPv4 address: Your EC2 public IP
 - Proxy status: DNS only (not proxied)
 
+## Demo Access
+
+For testing purposes, you can use the following credentials to access the admin panel:
+
+**Username:** `admin`  
+**Password:** `password123`
+
+> **Note:** These are demo credentials for development and testing. In production, make sure to change these credentials and implement proper authentication security measures.
+
 ## Features
 
 - CAPTCHA generation and validation
