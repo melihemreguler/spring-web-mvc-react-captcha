@@ -76,7 +76,7 @@ export default function Login() {
     setLoading(true);
     setMessage('');
     try {
-      const captchaRes = await fetch('http://localhost:8080/Bm470Captcha/api/captcha/validate', {
+      const captchaRes = await fetch('/api/captcha/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -91,7 +91,7 @@ export default function Login() {
       const captchaData = await captchaRes.json();
       if (!captchaData.success) throw new Error(t.captchaError);
 
-      const loginRes = await fetch('http://localhost:8080/Bm470Captcha/api/user/login', {
+      const loginRes = await fetch('/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

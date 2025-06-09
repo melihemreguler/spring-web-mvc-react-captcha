@@ -4,8 +4,8 @@ import { RotateCw, Trash2, PlusCircle, LogOut } from 'lucide-react';
 import { logout } from '../utils/auth';
 
 const SINGLE_CAPTCHA_URL = import.meta.env.VITE_CAPTCHA_URL;
-const LIST_CAPTCHA_URL = 'http://localhost:8080/Bm470Captcha/api/captcha/list';
-const CREATE_CAPTCHA_URL = 'http://localhost:8080/Bm470Captcha/api/captchas/generate';
+const LIST_CAPTCHA_URL = '/api/captcha/list';
+const CREATE_CAPTCHA_URL = '/api/captchas/generate';
 
 export default function AdminPanel() {
     const [captchaImage, setCaptchaImage] = useState('');
@@ -70,7 +70,7 @@ export default function AdminPanel() {
         if (!window.confirm(language === 'tr' ? 'Bu captchayı silmek istediğinize emin misiniz?' : 'Are you sure to delete this captcha?')) return;
 
         try {
-            const res = await fetch(`http://localhost:8080/Bm470Captcha/api/captcha/delete/${id}`, {
+            const res = await fetch(`/api/captcha/delete/${id}`, {
                 method: 'DELETE',
             });
             if (!res.ok) throw new Error(language === 'tr' ? 'Silme işlemi başarısız oldu' : 'Delete failed');
