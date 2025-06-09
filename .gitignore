@@ -51,3 +51,7 @@ yarn-error.log
 
 ### Frontend Build ###
 frontend/dist/
+
+### Logs ###
+logs/
+*.log
