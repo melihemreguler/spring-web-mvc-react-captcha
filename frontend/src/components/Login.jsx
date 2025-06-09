@@ -19,7 +19,9 @@ const translations = {
     error: 'Giriş başarısız',
     captchaError: 'Captcha yanlış!',
     reload: 'Yenile',
-    selectLanguage: 'Dil Seçin'
+    selectLanguage: 'Dil Seçin',
+    demoCredentials: 'Demo Giriş Bilgileri',
+    demoInfo: 'Kullanıcı Adı: admin | Şifre: password123'
   },
   en: {
     title: 'Login',
@@ -35,7 +37,9 @@ const translations = {
     error: 'Login failed',
     captchaError: 'Captcha is incorrect!',
     reload: 'Reload',
-    selectLanguage: 'Select Language'
+    selectLanguage: 'Select Language',
+    demoCredentials: 'Demo Credentials',
+    demoInfo: 'Username: admin | Password: password123'
   }
 };
 
@@ -130,6 +134,12 @@ export default function Login() {
             <option value="tr">🇹🇷 Türkçe</option>
             <option value="en">🇬🇧 English</option>
           </select>
+        </div>
+
+        {/* Demo Credentials Info */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="text-sm font-semibold text-blue-800 mb-2">{t.demoCredentials}</h3>
+          <p className="text-sm text-blue-700">{t.demoInfo}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
