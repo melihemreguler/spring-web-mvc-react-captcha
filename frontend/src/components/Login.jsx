@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RotateCw } from 'lucide-react';
 
-const CAPTCHA_URL = import.meta.env.VITE_CAPTCHA_URL;
+const CAPTCHA_URL = '/api/captcha/getcaptcha';
 
 const translations = {
   tr: {

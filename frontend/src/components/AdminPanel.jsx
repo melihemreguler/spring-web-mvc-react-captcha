@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RotateCw, Trash2, PlusCircle, LogOut } from 'lucide-react';
 import { logout } from '../utils/auth';
 
-const SINGLE_CAPTCHA_URL = import.meta.env.VITE_CAPTCHA_URL;
+const SINGLE_CAPTCHA_URL = '/api/captcha/getcaptcha';
 const LIST_CAPTCHA_URL = '/api/captcha/list';
 const CREATE_CAPTCHA_URL = '/api/captchas/generate';
 
