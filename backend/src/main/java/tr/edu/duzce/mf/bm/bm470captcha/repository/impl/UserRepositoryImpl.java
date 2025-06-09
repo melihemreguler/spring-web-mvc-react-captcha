@@ -43,4 +43,17 @@ public class UserRepositoryImpl implements IUserRepository {
             throw new RuntimeException("Kullanıcı kaydetme sırasında hata oluştu", e);
         }
     }
+
+    @Override
+    public long count() {
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<User> root = cq.from(User.class);
+            cq.select(cb.count(root));
+            return entityManager.createQuery(cq).getSingleResult();
+        } catch (Exception e) {
+            throw new RuntimeException("Kullanıcı sayısını getirirken hata oluştu", e);
+        }
+    }
 }
